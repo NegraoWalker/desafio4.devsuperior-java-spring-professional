@@ -1,11 +1,15 @@
 package com.devsuperior.dsmeta.services;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
+import com.devsuperior.dsmeta.dto.SaleReportDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.devsuperior.dsmeta.dto.SaleMinDTO;
+import com.devsuperior.dsmeta.dto.SaleMinDto;
 import com.devsuperior.dsmeta.entities.Sale;
 import com.devsuperior.dsmeta.repositories.SaleRepository;
 
@@ -14,10 +18,35 @@ public class SaleService {
 
 	@Autowired
 	private SaleRepository repository;
-	
-	public SaleMinDTO findById(Long id) {
+
+	public SaleMinDto findById(Long id) {
 		Optional<Sale> result = repository.findById(id);
 		Sale entity = result.get();
-		return new SaleMinDTO(entity);
+		return new SaleMinDto(entity);
+	}
+
+	public Page<SaleReportDto> findSalesReport(String minDate, String maxDate, String sellerName, Pageable pageable) {
+		LocalDate now = LocalDate.now();
+		LocalDate startDate;
+		LocalDate endDate;
+
+		if (minDate == null || minDate.isEmpty()) {
+			startDate = now.minusMonths(12);
+		} else {
+			startDate = LocalDate.parse(minDate);
+		}
+
+		// Verifica se maxDate foi fornecido
+		if (maxDate == null || maxDate.isEmpty()) {
+			endDate = now;
+		} else {
+			endDate = LocalDate.parse(maxDate);
+		}
+
+		if (sellerName == null) {
+			sellerName = "";
+		}
+
+		return repository.findSalesReport(startDate, endDate, sellerName, pageable);
 	}
 }

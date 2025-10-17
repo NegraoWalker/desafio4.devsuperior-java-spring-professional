@@ -11,15 +11,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_sales")
+@Table(name = "sales")
 public class Sale {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Integer visited;
-	private Integer deals;
-	private Double amount;
+	private Integer visited; //número de visitas
+	private Integer deals; //qtd de negócios fechados
+	private Double amount; //quantia total
 	private LocalDate date;
 	
 	@ManyToOne
